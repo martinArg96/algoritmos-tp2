@@ -1,4 +1,4 @@
-# TP 1 - GRUPO 22
+#Archivo original: TP 1 - GRUPO 22
 
 import getpass
 user = "admin"
