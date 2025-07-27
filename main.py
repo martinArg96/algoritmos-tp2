@@ -11,7 +11,7 @@ Var
 flights : flight
 
 '''
-MAXFLIGHTS = 2
+MAXFLIGHTS = 20
 MAXAIRLINES = 6
 
 
@@ -34,8 +34,8 @@ airlines = [
     ["Azul Linhas Aéreas", "AZU", "Descripción de Azul Linhas Aéreas", "BRA"]
 ]
 
-user = "admin"
-password = "admin"
+user = ""
+password = ""
 loginCount = 0
 login1 = False
 opt = 1
@@ -141,6 +141,7 @@ def subMenu5():
         match opt5:
             case "a":
                 createFlight(airlines, flights, flightPrices)
+                showFlights(flights, flightPrices)
             case "b":
                 modifyFlight()
             case "c":
@@ -350,9 +351,15 @@ def login():
 def createFlight(airlines, flights, flightPrices):
     print("\n CREANDO VUELOS")
 
+    flightIndex = 0
+    #ver cauntosm vuelos hay creados
+    for i in range(MAXFLIGHTS):
+        if flights[i][0] != "":
+            flightIndex += 1
+
     airlineCode = input(" \n  Ingrese el Código de aerolínea (máx. 3 caracteres) o 'salir' para volver: ")
     while airlineCode != "salir":
-        for i in range(MAXFLIGHTS):
+        while(flightIndex<MAXFLIGHTS):
             # Validación del código de aerolínea.
             while (len(airlineCode) > 3):
                 airlineCode = input("  Código inválido. Ingrese el código de aerolínea (máx. 3 caracteres): ")
@@ -360,25 +367,27 @@ def createFlight(airlines, flights, flightPrices):
             while(searchAirline(airlineCode,airlines) == False):
                 airlineCode = input("  Aerolínea no encontrada. Ingrese el código de aerolínea (máx. 3 caracteres): ")
 
-            flights[i][0] = airlineCode  # Asignar el código de aerolínea al vuelo
-            flights[i][1] = input(" \n  Origen del vuelo: ")
-            flights[i][2] = input(" \n  Destino del vuelo: ")
-            flights[i][3] = input(" \n  Fecha del vuelo (DD/MM/AAAA): ")
-            flights[i][4] = input(" \n  Hora del vuelo (HH:MM): ")
+            flights[flightIndex][0] = airlineCode  # Asignar el código de aerolínea al vuelo
+            flights[flightIndex][1] = input(" \n  Ingrese origen del vuelo: ")
+            flights[flightIndex][2] = input(" \n  Ingrese destino del vuelo: ")
+            flights[flightIndex][3] = input(" \n  Ingrese fecha del vuelo (DD/MM/AAAA): ")
+            flights[flightIndex][4] = input(" \n  Ingrese hora del vuelo (HH:MM): ")
 
-            flightPrices[i] = float(input(" \n  Precio del vuelo: "))
-            airlineCode = input(" \n  Ingrese el Código de aerolínea (máx. 3 caracteres) o 'salir' para volver: ")
-
-    #mostrar los vuelos creados
-    print("\n  Vuelos creados:")
-    for flight in flights:
-        if flight[0] != "":
-            print(f"  Aerolínea: {flight[0]}, Origen: {flight[1]}, Destino: {flight[2]}, Fecha: {flight[3]}, Hora: {flight[4]}, Precio: ${flightPrices[flights.index(flight)]:.2f}")
-        else:
-            print("  No hay vuelos creados.")
-    # Volver al menú principal.
+            flightPrices[flightIndex] = float(input(" \n  Precio del vuelo: "))
+            airlineCode = input(" \n  Ingrese el código de aerolínea (máx. 3 caracteres) o 'salir' para volver: ")
+            if airlineCode == "salir":
+                flightIndex= 9999
+            else:
+                flightIndex += 1
 
 
+def showFlights(flights, flightPrices):
+    print("\n  Vuelos disponibles:")
+    print("  ------------------------------------------")
+    print("  Aerolínea | Origen       | Destino      | Fecha       | Hora     | Precio")
+    for i in range(MAXFLIGHTS):
+        if flights[i][0] != "":
+            print(f"   {flights[i][0]} {flights[i][1]}  {flights[i][2]}  {flights[i][3]} {flights[i][4]}  ${flightPrices[i]:.2f}")
 
 
 def modifyFlight():
