@@ -1,6 +1,39 @@
 #Archivo original: TP 1 - GRUPO 22
-
 import getpass
+import os
+
+'''
+Type
+flight = [
+    [flightCode, airline, origin, destination, date, time, price, seats],
+
+Var
+flights : flight
+
+'''
+MAXFLIGHTS = 2
+MAXAIRLINES = 6
+
+
+
+# Inicializar el array vacío
+flights = [[""]*5 for i in range(MAXFLIGHTS)]
+flightPrices = [0.0] * MAXFLIGHTS
+
+#ejemplo:
+# flights[0] = ["FL001", "LAT", "Buenos Aires", "Santiago", "01/06/2025", "10:00", 150.00, 100]
+
+# ARREGLO DE AEROLINES PRECARGADO
+# airlines = [name, iata, descriptionAirline, code]
+airlines = [
+    ["Aerolínea Argentina", "AAA", "Descripción de Aerolínea Argentina", "ARG"],
+    ["Latam", "LAT", "Descripción de Latam", "CHI"],
+    ["Gol", "GOL", "Descripción de Gol", "BRA"],
+    ["Aerolínea Austral", "AUS", "Descripción de Aerolínea Austral", "ARG"],
+    ["Sky Airline", "SKY", "Descripción de Sky Airline", "CHI"],
+    ["Azul Linhas Aéreas", "AZU", "Descripción de Azul Linhas Aéreas", "BRA"]
+]
+
 user = "admin"
 password = "admin"
 loginCount = 0
@@ -30,7 +63,8 @@ def menu():
     print("   2. Aprobar/Denegar Promociones")
     print("   3. Gestión de Novedades")
     print("   4. Reportes")
-    print("   5. Salir")
+    print("   5. Gestión de Vuelos")
+    print("   0. Salir")
 
 # Función para mostrar el submenú1 con validación de la opción.   
 def subMenu1():    
@@ -89,6 +123,32 @@ def subMenu4():
                 
         if (opt4 == "a" or opt4 == "b" or opt4 == "c"):
             construction()
+
+#Funcion para mostrar el submenu de gestión de vuelos (Para usuario tipo SEO)
+def subMenu5():
+    opt5 = ""
+    while (opt5 != "d"):
+        print("\n- Gestión de Vuelos")
+        print("  a. Crear Vuelo")
+        print("  b. Modificar Vuelo")
+        print("  c. Eliminar Vuelo")
+        print("  d. Volver")
+
+        opt5 = (input("\n**** Ingrese una opción: "))
+        while(opt5 != "a" and opt5 != "b" and opt5 != "c" and opt5 != "d"):
+            opt4 = (input("Opción inválida. Por favor ingrese una nuevamente: "))
+
+        match opt5:
+            case "a":
+                createFlight(airlines, flights, flightPrices)
+            case "b":
+                modifyFlight()
+            case "c":
+                deleteFlight()
+            case "d":
+                print("\nVolviendo al menú principal...")
+
+
 
 # Función para mostrar en las opciones que no tienen funcionalidad todavía.         
 def construction():
@@ -286,14 +346,69 @@ def login():
         print("\n   ¡Ingreso exitoso!")
         login1 = True
 
+# Funcion para crear VUELOS
+def createFlight(airlines, flights, flightPrices):
+    print("\n CREANDO VUELOS")
+
+    airlineCode = input(" \n  Ingrese el Código de aerolínea (máx. 3 caracteres) o 'salir' para volver: ")
+    while airlineCode != "salir":
+        for i in range(MAXFLIGHTS):
+            # Validación del código de aerolínea.
+            while (len(airlineCode) > 3):
+                airlineCode = input("  Código inválido. Ingrese el código de aerolínea (máx. 3 caracteres): ")
+            # Se busca la aerolínea ingresada.
+            while(searchAirline(airlineCode,airlines) == False):
+                airlineCode = input("  Aerolínea no encontrada. Ingrese el código de aerolínea (máx. 3 caracteres): ")
+
+            flights[i][0] = airlineCode  # Asignar el código de aerolínea al vuelo
+            flights[i][1] = input(" \n  Origen del vuelo: ")
+            flights[i][2] = input(" \n  Destino del vuelo: ")
+            flights[i][3] = input(" \n  Fecha del vuelo (DD/MM/AAAA): ")
+            flights[i][4] = input(" \n  Hora del vuelo (HH:MM): ")
+
+            flightPrices[i] = float(input(" \n  Precio del vuelo: "))
+            airlineCode = input(" \n  Ingrese el Código de aerolínea (máx. 3 caracteres) o 'salir' para volver: ")
+
+    #mostrar los vuelos creados
+    print("\n  Vuelos creados:")
+    for flight in flights:
+        if flight[0] != "":
+            print(f"  Aerolínea: {flight[0]}, Origen: {flight[1]}, Destino: {flight[2]}, Fecha: {flight[3]}, Hora: {flight[4]}, Precio: ${flightPrices[flights.index(flight)]:.2f}")
+        else:
+            print("  No hay vuelos creados.")
+    # Volver al menú principal.
+
+
+
+
+def modifyFlight():
+    print("\n* EN CONSTRUCCIÓN...")
+
+
+def deleteFlight():
+    print("\n* EN CONSTRUCCIÓN...") 
+
+def searchAirline(airlineCode, airlines):
+    foundAirline = False
+    for airline in range(MAXAIRLINES):
+        if airlines[airline][1] == airlineCode:
+            print("\n  Aerolínea encontrada:")
+            foundAirline = True
+    return foundAirline
+
+
+
+
+    
+
 #Programa principal
 login()
 if (login1):  
-    while (opt!="5"):
+    while (opt!="0"):
         menu()
         opt = (input("\nIngrese una opción: "))
         # Validación de la opción.
-        while(opt != "1" and opt != "2" and opt != "3" and opt != "4" and opt != "5"):
+        while(opt != "1" and opt != "2" and opt != "3" and opt != "4" and opt != "5" and opt != "0"):
             opt = (input("Opción inválida. Por favor ingrese una nuevamente: "))
         # Redireccionamiento.
         match opt:
@@ -305,5 +420,7 @@ if (login1):
                 subMenu3()
             case "4":
                 subMenu4()
+            case "5":
+                subMenu5()
 print("\nPrograma finalizado.")
 print(" ")
