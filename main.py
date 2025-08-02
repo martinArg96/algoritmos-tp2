@@ -1,5 +1,7 @@
 #Archivo original: TP 1 - GRUPO 22
 import getpass
+import random
+
 import os
 
 '''
@@ -12,7 +14,7 @@ flights : flight
 
 '''
 MAXFLIGHTS = 20
-MAXAIRLINES = 6
+MAXAIRLINES = 5 #cambio a 5 maximo por consigna
 
 
 
@@ -30,8 +32,7 @@ airlines = [
     ["Latam", "LAT", "Descripción de Latam", "CHI"],
     ["Gol", "GOL", "Descripción de Gol", "BRA"],
     ["Aerolínea Austral", "AUS", "Descripción de Aerolínea Austral", "ARG"],
-    ["Sky Airline", "SKY", "Descripción de Sky Airline", "CHI"],
-    ["Azul Linhas Aéreas", "AZU", "Descripción de Azul Linhas Aéreas", "BRA"]
+    ["Sky Airline", "SKY", "Descripción de Sky Airline", "CHI"]
 ]
 
 user = ""
@@ -140,7 +141,7 @@ def subMenu5():
 
         match opt5:
             case "a":
-                createFlight(airlines, flights, flightPrices)
+                createFlight(airlines, flights, flightPrices,seatMatrix)
                 showFlights(flights, flightPrices)
             case "b":
                 modifyFlight()
@@ -348,11 +349,11 @@ def login():
         login1 = True
 
 # Funcion para crear VUELOS
-def createFlight(airlines, flights, flightPrices):
+def createFlight(airlines, flights, flightPrices, seatMatrix):
     print("\n CREANDO VUELOS")
 
     flightIndex = 0
-    #ver cauntosm vuelos hay creados
+    #ver cuántos vuelos hay creados
     for i in range(MAXFLIGHTS):
         if flights[i][0] != "":
             flightIndex += 1
@@ -374,11 +375,18 @@ def createFlight(airlines, flights, flightPrices):
             flights[flightIndex][4] = input(" \n  Ingrese hora del vuelo (HH:MM): ")
 
             flightPrices[flightIndex] = float(input(" \n  Precio del vuelo: "))
+            # Asignar asientos al vuelo
+            assignSeatsToFlight(seatMatrix, flightIndex)
+
+            print("\n  Vuelo CREADO exitosamente.")
+
             airlineCode = input(" \n  Ingrese el código de aerolínea (máx. 3 caracteres) o 'salir' para volver: ")
             if airlineCode == "salir":
                 flightIndex= 9999
             else:
                 flightIndex += 1
+
+            
 
 
 def showFlights(flights, flightPrices):
@@ -406,11 +414,50 @@ def searchAirline(airlineCode, airlines):
     return foundAirline
 
 
+def initializeSeatMatrix():
+
+    # Crear matriz vacía de 800x7 de forma clásica
+    seatMatrix = [[None for j in range(7)] for i in range(800)]
+    
+    # Inicializar la columna del pasillo
+    for row in range(800):
+        seatMatrix[row][3] = "PASILLO"
+    
+    # Inicializar todos los asientos como None (excepto pasillo)
+    for row in range(800):
+        for col in range(7):
+            if col != 3:  # No tocar la columna del pasillo
+                seatMatrix[row][col] = None
+    
+    return seatMatrix
+
+def assignSeatsToFlight(seatMatrix, flightIndex):
+    # Asigna asientos aleatoriamente con estados L, O, R para un vuelo específico
+    
+    
+    if flightIndex < 0 or flightIndex >= 20:
+        print("Error: Índice de vuelo inválido. Debe estar entre 0 y 19")
+        return
+    
+    startRow = flightIndex * 40
+    endRow = startRow + 39
+    
+    states = ["L", "O", "R"]
+    
+    for row in range(startRow, endRow + 1):
+        for col in range(7):
+            if col != 3:
+                randomState = random.choice(states)
+                seatMatrix[row][col] = randomState
+    
+    print(f"Asientos asignados al vuelo {flightIndex + 1} (filas {startRow} a {endRow})")
+    print("Asientos inicializados aleatoriamente: L (libre), O (ocupado), R (reservado)")
 
 
     
 
 #Programa principal
+seatMatrix = initializeSeatMatrix()  # Inicializar y GUARDAR la matriz de asientos
 login()
 if (login1):  
     while (opt!="0"):
