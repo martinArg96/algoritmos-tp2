@@ -143,6 +143,7 @@ def subMenu5():
             case "a":
                 createFlight(airlines, flights, flightPrices,seatMatrix)
                 showFlights(flights, flightPrices)
+                listAirlinesFlights()
             case "b":
                 modifyFlight()
             case "c":
@@ -621,6 +622,46 @@ def assignSeatsToFlight(seatMatrix, flightIndex):
     
     print(f"Asientos asignados al vuelo {flightIndex + 1} (filas {startRow} a {endRow})")
     print("Asientos inicializados aleatoriamente: L (libre), O (ocupado), R (reservado)")
+
+
+#ListarVuelosAerolineas(): REQUERIMIENTO 1
+def listAirlinesFlights():
+    # Arreglo auxiliar para contar vuelos por aerolínea [código, cantidad]
+    airlineFlightCount = [["", 0] for i in range(MAXAIRLINES)]
+    
+    # Inicializar con las aerolíneas existentes
+    for i in range(MAXAIRLINES):
+        airlineFlightCount[i][0] = airlines[i][1]  # Código IATA de la aerolínea
+        airlineFlightCount[i][1] = 0  # Inicializar contador en 0
+    
+    # Contar vuelos vigentes por aerolínea
+    for i in range(MAXFLIGHTS):
+        if flights[i][0] != "" and flights[i][5] == "A":  # Solo vuelos vigentes
+            airlineCode = flights[i][0]
+            
+            # Buscar la aerolínea en el contador y sumar
+            for j in range(MAXAIRLINES):
+                if airlineFlightCount[j][0] == airlineCode:
+                    airlineFlightCount[j][1] += 1
+    
+    # Ordenar de manera descendente por cantidad de vuelos (Falsa Burbuja)
+    for i in range(MAXAIRLINES - 1):
+        for j in range(MAXAIRLINES - 1 - i):
+            if airlineFlightCount[j][1] < airlineFlightCount[j + 1][1]:
+                aux = airlineFlightCount[j]
+                airlineFlightCount[j] = airlineFlightCount[j + 1]
+                airlineFlightCount[j + 1] = aux
+    
+    # Mostrar resultados
+    print("\n  VUELOS VIGENTES POR AEROLÍNEA (ordenado descendente)")
+    print("  ------------------------------------------")
+    print("  Posición | Aerolínea | Cantidad de Vuelos")
+    
+    for i in range(MAXAIRLINES):
+        print(f"     {i+1}      {airlineFlightCount[i][0]}       {airlineFlightCount[i][1]}")
+    
+    print(f"\n  Aerolínea con MAYOR cantidad de vuelos: {airlineFlightCount[0][0]} ({airlineFlightCount[0][1]} vuelos)")
+    print(f"  Aerolínea con MENOR cantidad de vuelos: {airlineFlightCount[MAXAIRLINES-1][0]} ({airlineFlightCount[MAXAIRLINES-1][1]} vuelos)")
 
 #Programa principal
 seatMatrix = initializeSeatMatrix()  # Inicializar y GUARDAR la matriz de asientos
