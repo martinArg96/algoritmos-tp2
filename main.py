@@ -133,10 +133,11 @@ def subMenu5():
         print("  a. Crear Vuelo")
         print("  b. Modificar Vuelo")
         print("  c. Eliminar Vuelo")
+        print("  e. buscar Vuelo") #requerimiento 2 hay q sacarlo de aca!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         print("  d. Volver")
 
         opt5 = (input("\n**** Ingrese una opción: "))
-        while(opt5 != "a" and opt5 != "b" and opt5 != "c" and opt5 != "d"):
+        while(opt5 != "a" and opt5 != "b" and opt5 != "c" and opt5 != "d" and opt5 != "e"):
             opt5 = (input("Opción inválida. Por favor ingrese una nuevamente: "))
 
         match opt5:
@@ -148,6 +149,8 @@ def subMenu5():
                 modifyFlight()
             case "c":
                 deleteFlight()
+            case "e":
+                flightSearch()
             case "d":
                 print("\nVolviendo al menú principal...")
 
@@ -662,6 +665,33 @@ def listAirlinesFlights():
     
     print(f"\n  Aerolínea con MAYOR cantidad de vuelos: {airlineFlightCount[0][0]} ({airlineFlightCount[0][1]} vuelos)")
     print(f"  Aerolínea con MENOR cantidad de vuelos: {airlineFlightCount[MAXAIRLINES-1][0]} ({airlineFlightCount[MAXAIRLINES-1][1]} vuelos)")
+
+#buscarVuelos() REQUERIMIENTO 2
+def flightSearch():
+   fechaBusqueda = input("\nIngrese la fecha de salida (DD/MM/AAAA): ")
+   
+   vuelosEncontrados = 0
+   
+   print("\n" + "=" * 104)
+   print("LISTADO DE VUELOS DISPONIBLES EN EL SISTEMA")
+   print("=" * 104)
+   print("CÓDIGO  AEROLÍNEA        ORIGEN           DESTINO          FECHA        HORA     PRECIO")
+   print("vuelo")
+   print("-" * 104)
+   
+   for i in range(MAXFLIGHTS):
+       if flights[i][0] != "" and flights[i][5] == "A" and flights[i][3] == fechaBusqueda:
+           # Buscar nombre de la aerolínea
+           nombreAerolinea = ""
+           for j in range(MAXAIRLINES):
+               if airlines[j][1] == flights[i][0]:
+                   nombreAerolinea = airlines[j][0]
+           
+           print(f"{i+1:<8}{nombreAerolinea:<17}{flights[i][1]:<17}{flights[i][2]:<17}{flights[i][3]:<13}{flights[i][4]:<9}${flightPrices[i]:,.0f}")
+           vuelosEncontrados += 1
+   
+   print("-" * 104)
+   print(f"Total de vuelos: {vuelosEncontrados}")    
 
 #Programa principal
 seatMatrix = initializeSeatMatrix()  # Inicializar y GUARDAR la matriz de asientos
