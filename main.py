@@ -2,28 +2,12 @@
 import getpass
 import random
 
-import os
-
-'''
-Type
-flight = [
-    [flightCode, airline, origin, destination, date, time, price, seats],
-
-Var
-flights : flight
-
-'''
 MAXFLIGHTS = 20
 MAXAIRLINES = 5 #cambio a 5 maximo por consigna
-
-
 
 # Inicializar el array vacío - MODIFICADO: Agregado estado del vuelo
 flights = [[""]*6 for i in range(MAXFLIGHTS)]  # 6 columnas: aerolínea, origen, destino, fecha, hora, estado
 flightPrices = [0.0] * MAXFLIGHTS
-
-#ejemplo:
-# flights[0] = ["LAT", "Buenos Aires", "Santiago", "01/06/2025", "10:00", "A"] y flightPrices[0] = 150.00
 
 # ARREGLO DE AEROLINES PRECARGADO
 # airlines = [name, iata, descriptionAirline, code]
@@ -34,9 +18,11 @@ airlines = [
     ["Aerolínea Austral", "AUS", "Descripción de Aerolínea Austral", "ARG"],
     ["Sky Airline", "SKY", "Descripción de Sky Airline", "CHI"]
 ]
+""" 
+users = [[""]*4 for i in range (10)] """
 
-user = ""
-password = ""
+""" user = ""
+password = "" """
 loginCount = 0
 login1 = False
 opt = 1
@@ -324,27 +310,69 @@ def modifyNews():
                 
         print("\n¡Novedad modificada con éxito!")
 
+# Función para cargar usuarios
+def loadUsers():
+    users=[
+        ["0","admin@example.com","admin123","Administrador"],
+        ["1","ceo1@example.com","ceo1","Ceo"],
+        ["2","ceo2@example.com","ceo2","Ceo"],
+        ["3","ceo3@example.com","ceo3","Ceo"],
+        ["4","ceo4@example.com","ceo4","Ceo"],
+        ["5","ceo5@example.com","ceo5","Ceo"],
+        ["6","us1@example.com","us1","Usuario"],
+        ["7","us2@example.com","us2","Usuario"],
+        ["","","",""],
+        ["","","",""],    
+    ]
+    for user in users:
+        print(user)
+    return users
+
+# Función para registrarse
+def register(users):
+    userIndex = 0
+    #ver cuántos usuarios hay creados
+    for i in range(10):
+        if users[i][0] != "":
+            userIndex += 1
+    if (userIndex<10):
+        print("\n REGISTRATE:")
+        users[userIndex][0] = str(userIndex)
+        users[userIndex][1] = input("  Ingrese su correo electrónico: ")
+        users[userIndex][2] = getpass.getpass("  Ingrese su contraseña: ")
+        users[userIndex][3] = input("  Ingrese tipo de usuario (Administrador: 'admin', CEO: 'ceo' o Usuario: 'user'): ")
+        
+        print("\n ¡REGISTRO EXITOSO!")
+    else:
+        print("Registro lleno")
+    
+
 # Función para iniciar sesión.        
-def login():
+def login(users):
     global loginCount
     global login1
     
+    print("\n INICIAR SESIÓN:")
     while (loginCount<3):
-        user1 = input("\nIngrese su usuario: ")
-        password1 = getpass.getpass("\nIngrese su contraseña: ")
-            
-        if (user == user1 and password == password1):
-            loginCount = 99
-        else: 
-            loginCount += 1
+        user1 = input("  Ingrese su usuario: ")
+        password1 = getpass.getpass("  Ingrese su contraseña: ")
+        i = 0
+        while (i<10 and loginCount!=99):
+            if (users[i][1] == user1 and users[i][2] == password1):
+                loginCount = 99
+            else: 
+                i += 1
+    
+        if (loginCount!=99 and i==10):
             print("\nUsuario y/o contraseña inválido. Reintente nuevamente.")
+            loginCount += 1  
         
     if (loginCount == 3):
         print("\nHa fallado 3 intentos. El programa se cerrara.")
     else:
         print("\n   ¡Ingreso exitoso!")
         login1 = True
-
+        
 # Funcion para crear VUELOS - MODIFICADA: Incluye estado del vuelo
 def createFlight(airlines, flights, flightPrices, seatMatrix):
     print("\n CREANDO VUELOS")
@@ -624,25 +652,39 @@ def assignSeatsToFlight(seatMatrix, flightIndex):
 
 #Programa principal
 seatMatrix = initializeSeatMatrix()  # Inicializar y GUARDAR la matriz de asientos
-login()
-if (login1):  
-    while (opt!="0"):
-        menu()
-        opt = (input("\nIngrese una opción: "))
-        # Validación de la opción.
-        while(opt != "1" and opt != "2" and opt != "3" and opt != "4" and opt != "5" and opt != "0"):
-            opt = (input("Opción inválida. Por favor ingrese una nuevamente: "))
-        # Redireccionamiento.
-        match opt:
-            case "1":    
-                subMenu1()
-            case "2":
-                construction()
-            case "3":
-                subMenu3()
-            case "4":
-                subMenu4()
-            case "5":
-                subMenu5()
+
+users = loadUsers()
+opt0=""
+print("\nBIENVENIDX")
+print("\n1) Registrarme.")
+print("2) Iniciar Sesión.")
+opt0=input("\nSeleccione una opción para poder ingresar: ")
+
+match opt0:
+    case "1":
+        register(users)
+        opt0 =="2"
+    case "2":
+        login(users)
+        if (login1):  
+            while (opt!="0"):
+                menu()
+                opt = (input("\nIngrese una opción: "))
+                # Validación de la opción.
+                while(opt != "1" and opt != "2" and opt != "3" and opt != "4" and opt != "5" and opt != "0"):
+                    opt = (input("Opción inválida. Por favor ingrese una nuevamente: "))
+                # Redireccionamiento.
+                match opt:
+                    case "1":    
+                        subMenu1()
+                    case "2":
+                        construction()
+                    case "3":
+                        subMenu3()
+                    case "4":
+                        subMenu4()
+                    case "5":
+                       subMenu5()
+
 print("\nPrograma finalizado.")
 print(" ")
