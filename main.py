@@ -1,6 +1,7 @@
 #Archivo original: TP 1 - GRUPO 22
 import getpass
 import random
+from datetime import datetime
 
 MAXFLIGHTS = 20
 MAXAIRLINES = 5 #cambio a 5 maximo por consigna
