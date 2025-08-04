@@ -1,4 +1,5 @@
-#Archivo original: TP 1 - GRUPO 22
+#TP 2 - GRUPO 8
+# Martin Drab, Daiana Colquicocha, Matías yanes, Sebastián Alegre
 import getpass
 import random
 from datetime import datetime
@@ -430,27 +431,40 @@ def showFlights(flights, flightPrices):
             estado_texto = "ACTIVO" if flights[i][5] == "A" else "BAJA"
             print(f"   {flights[i][0]}     {flights[i][1]}  {flights[i][2]}  {flights[i][3]} {flights[i][4]}  ${flightPrices[i]:.2f}  {estado_texto}")
 
-# MODIFICADA: Validar que el vuelo esté activo antes de modificar
 def modifyFlight():
     global flights, flightPrices, airlines
     
     print("\n MODIFICAR VUELO")
     
-    # Mostrar vuelos disponibles primero
     showFlightsWithIndex(flights, flightPrices)
     
     if not hasFlights():
         print("\n  No hay vuelos disponibles para modificar.")
         return
     
-    flightCode = input("\n  Ingrese el código de vuelo (índice) a modificar o 'salir' para volver: ")
-    
-    while flightCode != "salir":
-        try:
-            flightIndex = int(flightCode)
-            if flightIndex >= 0 and flightIndex < MAXFLIGHTS and flights[flightIndex][0] != "":
+    continuar = True
+    while continuar:
+        flightCode = input("\n  Ingrese el código de vuelo (índice) a modificar o 'salir' para volver: ")
+        
+        if flightCode == "salir":
+            continuar = False
+        else:
+            es_numero_valido = True
+            flightIndex = 0
+            
+            if flightCode == "":
+                es_numero_valido = False
+            else:
+                for char in flightCode:
+                    if not char.isdigit():
+                        es_numero_valido = False
+            
+            if es_numero_valido:
+                flightIndex = int(flightCode)
+            
+            if es_numero_valido and flightIndex >= 0 and flightIndex < MAXFLIGHTS and flights[flightIndex][0] != "":
                 
-                # Verificar si el vuelo está dado de baja
+                puede_modificar = True
                 if flights[flightIndex][5] == "B":
                     print(f"\n  El vuelo {flightIndex} está dado de baja.")
                     activar = input("  ¿Desea activarlo para poder modificarlo? (s/n): ")
@@ -459,25 +473,25 @@ def modifyFlight():
                         print("  ¡Vuelo activado exitosamente!")
                     else:
                         print("  No se puede modificar un vuelo dado de baja.")
-                        break
+                        puede_modificar = False
                 
-                print(f"\n  Vuelo encontrado: {flights[flightIndex][0]} - {flights[flightIndex][1]} a {flights[flightIndex][2]}")
-                print("  ¿Qué desea modificar?")
-                print("    1. Aerolínea")
-                print("    2. Origen")
-                print("    3. Destino") 
-                print("    4. Fecha")
-                print("    5. Hora")
-                print("    6. Precio")
-                print("    7. Modificar todo")
-                print("    0. Cancelar")
-            
-                option = input("\n  Ingrese su opción: ")
-                while option not in ["1", "2", "3", "4", "5", "6", "7", "0"]:
-                    option = input("  Opción inválida. Ingrese una opción válida: ")
-            
-                match option:
-                    case "1":
+                if puede_modificar:
+                    print(f"\n  Vuelo encontrado: {flights[flightIndex][0]} - {flights[flightIndex][1]} a {flights[flightIndex][2]}")
+                    print("  ¿Qué desea modificar?")
+                    print("    1. Aerolínea")
+                    print("    2. Origen")
+                    print("    3. Destino") 
+                    print("    4. Fecha")
+                    print("    5. Hora")
+                    print("    6. Precio")
+                    print("    7. Modificar todo")
+                    print("    0. Cancelar")
+                
+                    option = input("\n  Ingrese su opción: ")
+                    while option not in ["1", "2", "3", "4", "5", "6", "7", "0"]:
+                        option = input("  Opción inválida. Ingrese una opción válida: ")
+                
+                    if option == "1":
                         newAirlineCode = input("  Ingrese el nuevo código de aerolínea (máx. 3 caracteres): ")
                         while len(newAirlineCode) > 3:
                             newAirlineCode = input("  Código inválido. Ingrese el código de aerolínea (máx. 3 caracteres): ")
@@ -486,28 +500,46 @@ def modifyFlight():
                         flights[flightIndex][0] = newAirlineCode
                         print("  ¡Aerolínea modificada exitosamente!")
                     
-                    case "2":
+                    elif option == "2":
                         flights[flightIndex][1] = input("  Ingrese el nuevo origen del vuelo: ")
                         print("  ¡Origen modificado exitosamente!")
                     
-                    case "3":
+                    elif option == "3":
                         flights[flightIndex][2] = input("  Ingrese el nuevo destino del vuelo: ")
                         print("  ¡Destino modificado exitosamente!")
                     
-                    case "4":
+                    elif option == "4":
                         flights[flightIndex][3] = input("  Ingrese la nueva fecha del vuelo (DD/MM/AAAA): ")
                         print("  ¡Fecha modificada exitosamente!")
                     
-                    case "5":
+                    elif option == "5":
                         flights[flightIndex][4] = input("  Ingrese la nueva hora del vuelo (HH:MM): ")
                         print("  ¡Hora modificada exitosamente!")
                     
-                    case "6":
-                        flightPrices[flightIndex] = float(input("  Ingrese el nuevo precio del vuelo: "))
-                        print("  ¡Precio modificado exitosamente!")
+                    elif option == "6":
+                        precio_valido = False
+                        while not precio_valido:
+                            precio_input = input("  Ingrese el nuevo precio del vuelo: ")
+                            es_precio_valido = True
+                            punto_decimal_encontrado = False
+                            
+                            if precio_input == "":
+                                es_precio_valido = False
+                            else:
+                                for char in precio_input:
+                                    if not (char.isdigit() or (char == "." and not punto_decimal_encontrado)):
+                                        es_precio_valido = False
+                                    if char == ".":
+                                        punto_decimal_encontrado = True
+                            
+                            if es_precio_valido:
+                                flightPrices[flightIndex] = float(precio_input)
+                                precio_valido = True
+                                print("  ¡Precio modificado exitosamente!")
+                            else:
+                                print("  Error: Ingrese un precio válido.")
                     
-                    case "7":
-                        # Modificar todos los campos
+                    elif option == "7":
                         newAirlineCode = input("  Ingrese el nuevo código de aerolínea (máx. 3 caracteres): ")
                         while len(newAirlineCode) > 3:
                             newAirlineCode = input("  Código inválido. Ingrese el código de aerolínea (máx. 3 caracteres): ")
@@ -519,26 +551,44 @@ def modifyFlight():
                         flights[flightIndex][2] = input("  Ingrese el nuevo destino del vuelo: ")
                         flights[flightIndex][3] = input("  Ingrese la nueva fecha del vuelo (DD/MM/AAAA): ")
                         flights[flightIndex][4] = input("  Ingrese la nueva hora del vuelo (HH:MM): ")
-                        flightPrices[flightIndex] = float(input("  Ingrese el nuevo precio del vuelo: "))
+                        
+                        # Validar entrada numérica para el precio
+                        precio_valido = False
+                        while not precio_valido:
+                            precio_input = input("  Ingrese el nuevo precio del vuelo: ")
+                            # Verificar si es un número válido (entero o decimal)
+                            es_precio_valido = True
+                            punto_decimal_encontrado = False
+                            
+                            if precio_input == "":
+                                es_precio_valido = False
+                            else:
+                                for char in precio_input:
+                                    if not (char.isdigit() or (char == "." and not punto_decimal_encontrado)):
+                                        es_precio_valido = False
+                                    if char == ".":
+                                        punto_decimal_encontrado = True
+                            
+                            if es_precio_valido:
+                                flightPrices[flightIndex] = float(precio_input)
+                                precio_valido = True
+                            else:
+                                print("  Error: Ingrese un precio válido.")
+                        
                         print("  ¡Vuelo modificado exitosamente!")
                     
-                    case "0":
+                    elif option == "0":
                         print("  Modificación cancelada.")
-            
-                # Mostrar vuelos actualizados
-                showFlightsWithIndex(flights, flightPrices)
-                break
+                
+                    showFlightsWithIndex(flights, flightPrices)
+                    continuar = False
             else:
-                print("  Vuelo no encontrado o índice inválido.")
-            
-        except ValueError:
-            print("  Código inválido. Ingrese un número válido.")
-        except:
-            print("  Error al procesar el código de vuelo.")
-            
-        flightCode = input("\n  Ingrese el código de vuelo (índice) a modificar o 'salir' para volver: ")
+                if not es_numero_valido:
+                    print("  Código inválido. Ingrese un número válido.")
+                else:
+                    print("  Vuelo no encontrado o índice inválido.")
 
-# MODIFICADA: Incluye estado del vuelo
+# Función para mostrar los vuelos con su índice como código
 def showFlightsWithIndex(flights, flightPrices):
     """Muestra los vuelos con su índice como código"""
     print("\n  Vuelos disponibles:")
@@ -549,13 +599,13 @@ def showFlightsWithIndex(flights, flightPrices):
             estado_texto = "ACTIVO" if flights[i][5] == "A" else "BAJA"
             print(f"   {i}      {flights[i][0]}     {flights[i][1]}  {flights[i][2]}  {flights[i][3]} {flights[i][4]}  ${flightPrices[i]:.2f}  {estado_texto}")
 
-# NUEVA: Función para eliminar vuelo (baja lógica)
+# Función para eliminar vuelo
 def deleteFlight():
     global flights, flightPrices
     
     print("\n ELIMINAR VUELO")
     
-    # Mostrar vuelos disponibles primero
+
     showFlightsWithIndex(flights, flightPrices)
     
     if not hasActiveFlights():
@@ -569,7 +619,6 @@ def deleteFlight():
             flightIndex = int(flightCode)
             if flightIndex >= 0 and flightIndex < MAXFLIGHTS and flights[flightIndex][0] != "":
                 
-                # Verificar si el vuelo está activo
                 if flights[flightIndex][5] == "B":
                     print(f"\n  El vuelo {flightIndex} ya está dado de baja.")
                     break
@@ -577,13 +626,11 @@ def deleteFlight():
                     print(f"\n  Vuelo encontrado: {flights[flightIndex][0]} - {flights[flightIndex][1]} a {flights[flightIndex][2]}")
                     print(f"  Precio: ${flightPrices[flightIndex]:.2f}")
                     
-                    # Confirmación antes de eliminar
                     confirmar = input("\n  ¿Está seguro que desea eliminar este vuelo? (s/n): ")
                     if confirmar.lower() == "s":
                         flights[flightIndex][5] = "B"  # Cambiar estado a baja
                         print("  ¡Vuelo eliminado exitosamente!")
                         
-                        # Mostrar vuelos actualizados
                         showFlightsWithIndex(flights, flightPrices)
                     else:
                         print("  Eliminación cancelada.")
@@ -661,25 +708,25 @@ def assignSeatsToFlight(seatMatrix, flightIndex):
 
 #ListarVuelosAerolineas(): REQUERIMIENTO 1
 def listAirlinesFlights():
-    # Arreglo auxiliar para contar vuelos por aerolínea [código, cantidad]
+
     airlineFlightCount = [["", 0] for i in range(MAXAIRLINES)]
     
-    # Inicializar con las aerolíneas existentes
+   
     for i in range(MAXAIRLINES):
-        airlineFlightCount[i][0] = airlines[i][1]  # Código IATA de la aerolínea
-        airlineFlightCount[i][1] = 0  # Inicializar contador en 0
+        airlineFlightCount[i][0] = airlines[i][1]  
+        airlineFlightCount[i][1] = 0  
     
-    # Contar vuelos vigentes por aerolínea
+   
     for i in range(MAXFLIGHTS):
         if flights[i][0] != "" and flights[i][5] == "A":  # Solo vuelos vigentes
             airlineCode = flights[i][0]
             
-            # Buscar la aerolínea en el contador y sumar
+          
             for j in range(MAXAIRLINES):
                 if airlineFlightCount[j][0] == airlineCode:
                     airlineFlightCount[j][1] += 1
     
-    # Ordenar de manera descendente por cantidad de vuelos (Falsa Burbuja)
+   
     for i in range(MAXAIRLINES - 1):
         for j in range(MAXAIRLINES - 1 - i):
             if airlineFlightCount[j][1] < airlineFlightCount[j + 1][1]:
@@ -687,7 +734,6 @@ def listAirlinesFlights():
                 airlineFlightCount[j] = airlineFlightCount[j + 1]
                 airlineFlightCount[j + 1] = aux
     
-    # Mostrar resultados
     print("\n  VUELOS VIGENTES POR AEROLÍNEA (ordenado descendente)")
     print("  ------------------------------------------")
     print("  Posición | Aerolínea | Cantidad de Vuelos")
@@ -713,7 +759,6 @@ def flightSearch():
    
    for i in range(MAXFLIGHTS):
        if flights[i][0] != "" and flights[i][5] == "A" and flights[i][3] == fechaBusqueda:
-           # Buscar nombre de la aerolínea
            nombreAerolinea = ""
            for j in range(MAXAIRLINES):
                if airlines[j][1] == flights[i][0]:
@@ -733,7 +778,6 @@ def getCurrentDate():
 def validateFlightDate(flightDate):
     validDate = False
     isValid = False
-     # Validar formato básico DD/MM/AAAA
     if len(flightDate) == 10 and flightDate[2] == '/' and flightDate[5] == '/':
         dayStr = flightDate[0:2]
         monthStr = flightDate[3:5]
@@ -743,7 +787,6 @@ def validateFlightDate(flightDate):
         month = int(monthStr)
         year = int(yearStr)
 
-        # Validar rangos básicos
         if day >= 1 and day <= 31 and month >= 1 and month <= 12 and year >= 2025:
             validDate = True
 
@@ -803,7 +846,7 @@ def searchSeats(flights, seatMatrix):
         validInput = False
         flightIndex = -1
 
-        if flightCode.isdigit(): # Verificar si es un número Esta bien usar isDigit??
+        if flightCode.isdigit(): 
             flightIndex = int(flightCode)
             validInput = True
         
@@ -833,7 +876,7 @@ def searchSeats(flights, seatMatrix):
 
 
 #Programa principal
-seatMatrix = initializeSeatMatrix()  # Inicializar y GUARDAR la matriz de asientos
+seatMatrix = initializeSeatMatrix()  
 
 users = loadUsers()
 opt0=""
