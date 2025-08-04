@@ -660,7 +660,7 @@ def hasFlights():
             return True
     return False
 
-# NUEVA: Función para verificar si hay vuelos activos
+
 def hasActiveFlights():
     """Verifica si hay vuelos activos en el sistema"""
     for i in range(MAXFLIGHTS):
@@ -669,23 +669,20 @@ def hasActiveFlights():
     return False
 
 def initializeSeatMatrix():
-    # Crear matriz vacía de 800x7 de forma clásica
+   
     seatMatrix = [[None for j in range(7)] for i in range(800)]
     
-    # Inicializar la columna del pasillo
     for row in range(800):
         seatMatrix[row][3] = "PASILLO"
     
-    # Inicializar todos los asientos como None (excepto pasillo)
     for row in range(800):
         for col in range(7):
-            if col != 3:  # No tocar la columna del pasillo
+            if col != 3:  
                 seatMatrix[row][col] = None
     
     return seatMatrix
 
 def assignSeatsToFlight(seatMatrix, flightIndex):
-    # Asigna asientos aleatoriamente con estados L, O, R para un vuelo específico
     
     if flightIndex < 0 or flightIndex >= 20:
         print("Error: Índice de vuelo inválido. Debe estar entre 0 y 19")
@@ -718,7 +715,7 @@ def listAirlinesFlights():
     
    
     for i in range(MAXFLIGHTS):
-        if flights[i][0] != "" and flights[i][5] == "A":  # Solo vuelos vigentes
+        if flights[i][0] != "" and flights[i][5] == "A":  
             airlineCode = flights[i][0]
             
           
@@ -770,7 +767,6 @@ def flightSearch():
    print("-" * 104)
    print(f"Total de vuelos: {vuelosEncontrados}")    
 
-# Función para obtener la fecha actual en formato DD/MM/AAAA
 def getCurrentDate():
     return datetime.now().strftime("%d/%m/%Y")
 
@@ -829,7 +825,7 @@ def showFlightSeats(seatMatrix, flightIndex):
     endRow = startRow + 40
     
     for row in range(startRow, endRow):
-        filaVuelo = row - startRow + 1  # Filas relativas(1-40)
+        filaVuelo = row - startRow + 1 
         print(f"  {filaVuelo:2d}  {seatMatrix[row][0]}   {seatMatrix[row][1]}   {seatMatrix[row][2]}    {seatMatrix[row][3]}   {seatMatrix[row][4]}   {seatMatrix[row][5]}   {seatMatrix[row][6]}")
     
     print("  " + "-" * 50)
