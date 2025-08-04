@@ -20,13 +20,9 @@ airlines = [
     ["Aerolínea Austral", "AUS", "Descripción de Aerolínea Austral", "ARG"],
     ["Sky Airline", "SKY", "Descripción de Sky Airline", "CHI"]
 ]
-""" 
-users = [[""]*4 for i in range (10)] """
 
-""" user = ""
-password = "" """
 loginCount = 0
-login1 = False
+login1 = ""
 opt = 1
 
 # Variables para las novedades.
@@ -46,14 +42,80 @@ newsPublicationDate3 = "15/05/2025"
 newsExpirationDate3 = "21/05/2025"
 
 # Función para mostrar el menú principal.
-def menu():
+def admMenu():
     print("\n●  Menú del Administrador")
     print("   1. Gestión de Aerolíneas")
     print("   2. Aprobar/Denegar Promociones")
     print("   3. Gestión de Novedades")
     print("   4. Reportes")
-    print("   5. Gestión de Vuelos")
     print("   0. Salir")
+    
+    while (opt!="0"):
+                opt = (input("\nIngrese una opción: "))
+                # Validación de la opción.
+                while(opt != "1" and opt != "2" and opt != "3" and opt != "4" and opt != "5" and opt != "0"):
+                    opt = (input("Opción inválida. Por favor ingrese una nuevamente: "))
+                # Redireccionamiento.
+                match opt:
+                    case "1":    
+                        subMenu1()
+                    case "2":
+                        construction()
+                    case "3":
+                        subMenu3()
+                    case "4":
+                        subMenu4()
+
+def ceoMenu():
+    print("\n●  Menú del CEO")
+    print("   1. Gestión de Vuelos")
+    print("   2. Gestión de Promociones")
+    print("   3. Reportes")
+    print("   4. Cerrar Sesión")
+    
+    while (opt!="4"):
+                opt = (input("\nIngrese una opción: "))
+                # Validación de la opción.
+                while(opt != "1" and opt != "2" and opt != "3" and opt != "4"):
+                    opt = (input("Opción inválida. Por favor ingrese una nuevamente: "))
+                # Redireccionamiento.
+                match opt:
+                    case "1":    
+                        print("menu 1 ceo")
+                    case "2":
+                        print("menu 2 ceo")
+                    case "3":
+                        print("menu 3 ceo")
+
+def userMenu():
+    print("\n●  Menú del Usuario")
+    print("   1. Buscar vuelos")
+    print("   2. Buscar asientos")
+    print("   3. Reservar Vuelos")
+    print("   4. Gestonar Reservas")
+    print("   5. Ver Historial de Compras")
+    print("   6. Ver Novedades")
+    print("   7. Cerrar Sesión")
+    
+    while (opt!="7"):
+                opt = (input("\nIngrese una opción: "))
+                # Validación de la opción.
+                while(opt != "1" and opt != "2" and opt != "3" and opt != "4" and opt != "5" and opt != "6" and opt != "7"):
+                    opt = (input("Opción inválida. Por favor ingrese una nuevamente: "))
+                # Redireccionamiento.
+                match opt:
+                    case "1":    
+                        print ("menu usuario 1")
+                    case "2":
+                        print ("menu usuario 2")
+                    case "3":
+                        print ("menu usuario 3")
+                    case "4":
+                        print ("menu usuario 4")
+                    case "5":
+                        print ("menu usuario 5")
+                    case "6":
+                        print ("menu usuario 6")    
 
 # Función para mostrar el submenú1 con validación de la opción.   
 def subMenu1():    
@@ -121,8 +183,8 @@ def subMenu5():
         print("  a. Crear Vuelo")
         print("  b. Modificar Vuelo")
         print("  c. Eliminar Vuelo")
-        print("  e. buscar Vuelo") #requerimiento 2 hay q sacarlo de aca!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        print("  f. Buscar Asientos") #requerimiento 3 hay q sacarlo de aca!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        """ print("  e. buscar Vuelo") #requerimiento 2 hay q sacarlo de aca!!!!!!!!!
+        print("  f. Buscar Asientos") #requerimiento 3 hay q sacarlo de aca!!!!!!! """
         print("  d. Volver")
 
         opt5 = (input("\n**** Ingrese una opción: "))
@@ -322,24 +384,24 @@ def modifyNews():
 # Función para cargar usuarios
 def loadUsers():
     users=[
-        ["0","admin@example.com","admin123","Administrador"],
-        ["1","ceo1@example.com","ceo1","Ceo"],
-        ["2","ceo2@example.com","ceo2","Ceo"],
-        ["3","ceo3@example.com","ceo3","Ceo"],
-        ["4","ceo4@example.com","ceo4","Ceo"],
-        ["5","ceo5@example.com","ceo5","Ceo"],
-        ["6","us1@example.com","us1","Usuario"],
-        ["7","us2@example.com","us2","Usuario"],
+        ["0","admin@example.com","admin123","adm"],
+        ["1","ceo1@example.com","ceo1","ceo"],
+        ["2","ceo2@example.com","ceo2","ceo"],
+        ["3","ceo3@example.com","ceo3","ceo"],
+        ["4","ceo4@example.com","ceo4","ceo"],
+        ["5","ceo5@example.com","ceo5","ceo"],
+        ["6","us1@example.com","us1","user"],
+        ["7","us2@example.com","us2","user"],
         ["","","",""],
         ["","","",""],    
     ]
-    for user in users:
-        print(user)
+    
     return users
 
 # Función para registrarse
 def register(users):
     userIndex = 0
+    userType = ""
     #ver cuántos usuarios hay creados
     for i in range(10):
         if users[i][0] != "":
@@ -349,7 +411,12 @@ def register(users):
         users[userIndex][0] = str(userIndex)
         users[userIndex][1] = input("  Ingrese su correo electrónico: ")
         users[userIndex][2] = getpass.getpass("  Ingrese su contraseña: ")
-        users[userIndex][3] = input("  Ingrese tipo de usuario (Administrador: 'admin', CEO: 'ceo' o Usuario: 'user'): ")
+        userType = input("  Ingrese tipo de usuario (Administrador: 'adm', CEO: 'ceo' o Usuario: 'user'): ")
+        while (userType!="adm" and userType!="ceo" and userType!="user"):
+            print("Formato incorrecto")
+            userType = input("  Ingrese tipo de usuario (Administrador: 'adm', CEO: 'ceo' o Usuario: 'user'): ")
+        users[userIndex][3] = userType
+        
         
         print("\n ¡REGISTRO EXITOSO!")
     else:
@@ -380,7 +447,16 @@ def login(users):
         print("\nHa fallado 3 intentos. El programa se cerrara.")
     else:
         print("\n   ¡Ingreso exitoso!")
-        login1 = True
+        login1 = users[i][3]
+        
+def menu(login1):
+    match login1:
+        case "adm":
+            admMenu()
+        case "ceo":
+            ceoMenu()
+        case "user":
+            userMenu()
         
 # Funcion para crear VUELOS - MODIFICADA: Incluye estado del vuelo
 def createFlight(airlines, flights, flightPrices, seatMatrix):
@@ -884,28 +960,11 @@ opt0=input("\nSeleccione una opción para poder ingresar: ")
 match opt0:
     case "1":
         register(users)
-        opt0 =="2"
+        login(users)
+        menu(login1)
     case "2":
         login(users)
-        if (login1):  
-            while (opt!="0"):
-                menu()
-                opt = (input("\nIngrese una opción: "))
-                # Validación de la opción.
-                while(opt != "1" and opt != "2" and opt != "3" and opt != "4" and opt != "5" and opt != "0"):
-                    opt = (input("Opción inválida. Por favor ingrese una nuevamente: "))
-                # Redireccionamiento.
-                match opt:
-                    case "1":    
-                        subMenu1()
-                    case "2":
-                        construction()
-                    case "3":
-                        subMenu3()
-                    case "4":
-                        subMenu4()
-                    case "5":
-                       subMenu5()
+        menu(login1)
 
 print("\nPrograma finalizado.")
 print(" ")
