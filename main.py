@@ -1,8 +1,8 @@
 #Archivo original: TP 1 - GRUPO 22
 import getpass
 import random
-
 import os
+from datetime import datetime
 
 '''
 Type
@@ -134,10 +134,11 @@ def subMenu5():
         print("  b. Modificar Vuelo")
         print("  c. Eliminar Vuelo")
         print("  e. buscar Vuelo") #requerimiento 2 hay q sacarlo de aca!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        print("  f. Buscar Asientos") #requerimiento 3 hay q sacarlo de aca!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         print("  d. Volver")
 
         opt5 = (input("\n**** Ingrese una opción: "))
-        while(opt5 != "a" and opt5 != "b" and opt5 != "c" and opt5 != "d" and opt5 != "e"):
+        while(opt5 != "a" and opt5 != "b" and opt5 != "c" and opt5 != "d" and opt5 != "e" and opt5 != "f"):
             opt5 = (input("Opción inválida. Por favor ingrese una nuevamente: "))
 
         match opt5:
@@ -151,6 +152,8 @@ def subMenu5():
                 deleteFlight()
             case "e":
                 flightSearch()
+            case "f":
+                searchSeats(flights, seatMatrix) 
             case "d":
                 print("\nVolviendo al menú principal...")
 
@@ -672,12 +675,12 @@ def flightSearch():
    
    vuelosEncontrados = 0
    
-   print("\n" + "=" * 104)
+   print("\n" + "=" * 100)
    print("LISTADO DE VUELOS DISPONIBLES EN EL SISTEMA")
-   print("=" * 104)
+   print("=" * 100)
    print("CÓDIGO  AEROLÍNEA        ORIGEN           DESTINO          FECHA        HORA     PRECIO")
    print("vuelo")
-   print("-" * 104)
+   print("-" * 100)
    
    for i in range(MAXFLIGHTS):
        if flights[i][0] != "" and flights[i][5] == "A" and flights[i][3] == fechaBusqueda:
@@ -692,6 +695,113 @@ def flightSearch():
    
    print("-" * 104)
    print(f"Total de vuelos: {vuelosEncontrados}")    
+
+# Función para obtener la fecha actual en formato DD/MM/AAAA
+def getCurrentDate():
+    return datetime.now().strftime("%d/%m/%Y")
+
+# Función para validar que la fecha del vuelos sea mayor o igual a la fecha actual
+def validateFlightDate(flightDate):
+    validDate = False
+    isValid = False
+     # Validar formato básico DD/MM/AAAA
+    if len(flightDate) == 10 and flightDate[2] == '/' and flightDate[5] == '/':
+        dayStr = flightDate[0:2]
+        monthStr = flightDate[3:5]
+        yearStr = flightDate[6:10]
+
+        day = int(dayStr)
+        month = int(monthStr)
+        year = int(yearStr)
+
+        # Validar rangos básicos
+        if day >= 1 and day <= 31 and month >= 1 and month <= 12 and year >= 2025:
+            validDate = True
+
+    if validDate:
+        currentDate = getCurrentDate()
+        currentDay = int(currentDate[0:2])
+        currentMonth = int(currentDate[3:5])
+        currentYear = int(currentDate[6:10])        
+
+        if year > currentYear:
+            isValid = True
+        elif year == currentYear:
+            if month > currentMonth:
+                isValid = True
+            elif month == currentMonth:
+                if day >= currentDay:
+                    isValid = True
+
+    if not validDate:
+        print("\nFecha inválida. Debe ser en formato DD/MM/AAAA y mayor o igual a la fecha actual.")
+
+
+    return isValid       
+
+# Función para validar que el vuelo exista y esté activo
+def validateActiveFlight(flightIndex, flights):
+    if flightIndex >= 0 and flightIndex < MAXFLIGHTS:
+        if flights[flightIndex][0] != "" and flights[flightIndex][5] == "A":
+            return True
+    return False
+
+# Función para mostrar los asientos de un vuelo específico
+def showFlightSeats(seatMatrix, flightIndex):
+    print(f"\n  DISTRIBUCIÓN DE ASIENTOS - VUELO {flightIndex}")
+    print("  " + "=" * 50)
+    print("    A   B   C  PASILLO  D   E   F")
+    print("  " + "-" * 50)
+    
+    startRow = flightIndex * 40
+    endRow = startRow + 40
+    
+    for row in range(startRow, endRow):
+        filaVuelo = row - startRow + 1  # Filas relativas(1-40)
+        print(f"  {filaVuelo:2d}  {seatMatrix[row][0]}   {seatMatrix[row][1]}   {seatMatrix[row][2]}    {seatMatrix[row][3]}   {seatMatrix[row][4]}   {seatMatrix[row][5]}   {seatMatrix[row][6]}")
+    
+    print("  " + "-" * 50)
+    print("  Estados: L = Libre, O = Ocupado, R = Reservado")
+
+# Función principal para buscar asientos (REQUERIMIENTO 3)
+def searchSeats(flights, seatMatrix):
+    print("\n BÚSQUEDA DE ASIENTOS")
+    print("  Fecha actual del sistema:", getCurrentDate())
+    
+    flightCode = input("\n  Ingrese el código de vuelo (índice) o 'salir' para volver: ")
+    
+    while flightCode != "salir":
+        validInput = False
+        flightIndex = -1
+
+        if flightCode.isdigit(): # Verificar si es un número Esta bien usar isDigit??
+            flightIndex = int(flightCode)
+            validInput = True
+        
+        if not validInput:
+            print("  Error: Ingrese un código de vuelo válido (número).")
+        elif not validateActiveFlight(flightIndex, flights):
+            print("  Error: El vuelo no existe o no está activo.")
+        else:
+            flightDate = flights[flightIndex][3]
+            if not validateFlightDate(flightDate):
+                print(f"  Error: El vuelo con fecha {flightDate} no está vigente.")
+                print(f"  La fecha debe ser posterior a {getCurrentDate()}")
+            else:
+                print(f"\n  Vuelo encontrado:")
+                print(f"  Aerolínea: {flights[flightIndex][0]}")
+                print(f"  Origen: {flights[flightIndex][1]}")
+                print(f"  Destino: {flights[flightIndex][2]}")
+                print(f"  Fecha: {flights[flightIndex][3]}")
+                print(f"  Hora: {flights[flightIndex][4]}")
+                print(f"  Precio: ${flightPrices[flightIndex]:.2f}")
+                
+                showFlightSeats(seatMatrix, flightIndex)
+                
+                input("\n  Presione ENTER para continuar...")
+                    
+        flightCode = input("\n  Ingrese el código de vuelo (índice) o 'salir' para volver: ")
+
 
 #Programa principal
 seatMatrix = initializeSeatMatrix()  # Inicializar y GUARDAR la matriz de asientos
