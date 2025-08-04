@@ -121,8 +121,8 @@ def subMenu5():
         print("  a. Crear Vuelo")
         print("  b. Modificar Vuelo")
         print("  c. Eliminar Vuelo")
-        print("  e. buscar Vuelo") #requerimiento 2 hay q sacarlo de aca!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        print("  f. Buscar Asientos") #requerimiento 3 hay q sacarlo de aca!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        print("  e. buscar Vuelo") 
+        print("  f. Buscar Asientos") 
         print("  d. Volver")
 
         opt5 = (input("\n**** Ingrese una opción: "))
