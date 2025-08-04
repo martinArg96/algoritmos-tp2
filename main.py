@@ -1,4 +1,4 @@
-#TP 2 - GRUPo 8
+#TP 2 - GRUPO 8
 # Martin Drab, Daiana Colquicocha, Matías yanes, Sebastián Alegre
 import getpass
 import random
